@@ -1,0 +1,5 @@
+{
+    "board": "arduino:mbed:nano33ble",
+    "sketch": "imu_nano\\imu_nano.ino",
+    "port": "COM6"
+}
