@@ -1,5 +1,0 @@
-{
-    "board": "arduino:mbed:nano33ble",
-    "sketch": "joint_angle_imu.ino",
-    "port": "COM6"
-}
