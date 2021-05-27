@@ -6,60 +6,137 @@
     <meta http-equiv="X-UA-Compatible" content="IE=chrome">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wearable ROM</title>
+    <!--FullPage Js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.min.js"
+        integrity="sha512-HqbDsHIJoZ36Csd7NMupWFxC7e7aX2qm213sX+hirN+yEx/eUNlZrTWPs1dUQDEW4fMVkerv1PfMohR1WdFFJQ=="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.css"
+        integrity="sha512-hGBKkjAVJUXoImyDezOKpzuY4LS1eTvJ4HTC/pbxn47x5zNzGA1vi3vFQhhOehWLTNHdn+2Yqh/IRNPw/8JF/A=="
+        crossorigin="anonymous" />
+    <!--End FullPage Js-->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
     <script src="https://unpkg.com/p5ble@0.0.7/dist/p5.ble.js" type="text/javascript"></script>
     <meta name="author" content="Gabriela Vega">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles_session.css">
 
 </head>
 
 <body>
+    <!-- header -->
     <header class='flex-container'>
         <div class='flex-item'>
             <a href="./index.html"><button>Back</button></a>
         </div>
         <div class='flex-item'>
-            <span>Session</span>
+            <span class="span-title">Session</span>
         </div>
     </header>
 
-    <div>
-        <p id='wearable_status'>Wearable disconnected!</p>
-        <button id='connect' class='button-body' type='button'>Connect</button>
-        <button id='disconnect' class='button-body' type='button'>Disconnect</button>
-    </div>
+    <div id="fullpage">
+        <!-- wearable connection -->
+        <div class="vertical-scrolling">
+            <h1>Connect your wearable</h1>
+            <div>
+                <button id='connectButton' class='button-body' type='button'>Connect</button>
+                <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
+                <p id='wearableStatus'>Status: Disconnected</p>
+            </div>
+        </div>
 
-    <div>
-        <label for="joints">Joint:</label>
-        <select name="joints" id="joints">
-            <option value="Elbow">Elbow</option>
-            <option value="Ankle">Ankle</option>
-            <option value="Shouler">Shouler</option>
-        </select>
+        <!-- exercise setting -->
+        <div class="vertical-scrolling">
+            <div class="flex-column">
 
-        <label for="repetitions">Repetitions:</label>
-        <input type="number" id="repetitions" name="repetitions" min="1" max="20" value="1">
-    </div>
+                <h1>Exercise setting</h1>
 
+                <div>
+                    <label for="breed">Breed:</label>
+                    <select name="breed" id="breedSelect">
+                        <option value="labrador">Labrador</option>
+                        <option value="german">German Shepherd</option>
+                    </select>
+                </div>
 
-    <div>
-        <span id='rep_label'>0/1</span>
-        <span>repetitions</span>
-    </div>
-    <div>
-        <p data-chronometer>00:00</p>
-        <button class='button-body' id='play'>Start</button>
-        <button class='button-body' id='pause'>Pause</button>
-    </div>
-    <div>
-        <p>Joint angle</p>
-        <p id="angle">0</p>
-    </div>
+                <div>
+                    <label for="joint">Joint:</label>
+                    <select name="joint" id="jointSelect">
+                        <option value="carpus">Carpus</option>
+                        <option value="elbow">Elbow</option>
+                        <option value="shoulder">Shoulder</option>
+                        <option value="ankle">Ankle</option>
+                        <option value="stifle">Stifle</option>
+                        <option value="hip">Hip</option>
+                    </select>
+                </div>
 
+                <div>
+                    <label for="repetitions">Repetitions:</label>
+                    <input type="number" id="repSelect" name="repetitions" min="1" max="20" value="1">
+                </div>
+
+                <button id='setButton' class='button-body' type='button'>Set</button>
+
+            </div>
+        </div>
+
+        <!-- exercise routine -->
+        <div class="vertical-scrolling">
+            <div class="flex-column">
+                <h1>Routine</h1>
+                <!-- cronometer -->
+                <div>
+                    <p data-chronometer style="font-size:30px;">00:00</p>
+                    <button class='button-body' id='playButton'>Start</button>
+                    <button class='button-body' id='pauseButton'>Stop</button>
+                </div>
+
+                <!-- ROM angle -->
+                <div style="align-items: center;">
+                    <!-- <span>Joint angle:</span> -->
+                    <span id="angleROMLabel" style="font-size: 80px;">0º</span>
+                </div>
+
+                <!-- safe range -->
+                <div>
+                    <p id='repLabel'>Repetitions: 0/1</p>
+                    <span id="minReachedLabel">Flexion: 0º</span>
+                    <span id="maxReachedLabel">Extension: 0º</span>
+                    <p id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- summary -->
+        <div class="vertical-scrolling">
+            <div class="flex-column">
+
+                <h1>Session Summary</h1>
+                <p>Good job ✨</p>
+                <div style="text-align: left;">
+                    <ul>
+                        <li id='summaryJoint'>Joint: Shoulder</li>
+                        <li id='summaryFlexion'>Flexion: 0º</li>
+                        <li id='summaryExtension'>Extension: 180º</li>
+                        <li id='summaryRepetition'>Repetitions: 0/10</li>
+                    </ul>
+                </div>
+                <div>
+                    <label for="senderMail">Email:</label>
+                    <input type="text" id="mailInput" name="mailInput" size="30">
+                </div>
+                <div>
+                    <button id='mailButton' class='button-body' type='button'>Share </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 
