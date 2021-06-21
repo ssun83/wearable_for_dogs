@@ -14,6 +14,7 @@
         integrity="sha512-hGBKkjAVJUXoImyDezOKpzuY4LS1eTvJ4HTC/pbxn47x5zNzGA1vi3vFQhhOehWLTNHdn+2Yqh/IRNPw/8JF/A=="
         crossorigin="anonymous" />
     <!--End FullPage Js-->
+    
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
@@ -59,6 +60,7 @@
                     <select name="breed" id="breedSelect">
                         <option value="labrador">Labrador</option>
                         <option value="german">German Shepherd</option>
+                        <option value="border-collies">Border Collies</option>
                     </select>
                 </div>
 
@@ -99,14 +101,14 @@
                 <div style="align-items: center;">
                     <!-- <span>Joint angle:</span> -->
                     <span id="angleROMLabel" style="font-size: 80px;">0º</span>
+                    
                 </div>
 
                 <!-- safe range -->
                 <div>
+                    <canvas id="canvas" width="350" height="60"></canvas>
                     <p id='repLabel'>Repetitions: 0/1</p>
-                    <span id="minReachedLabel">Flexion: 0º</span>
-                    <span id="maxReachedLabel">Extension: 0º</span>
-                    <p id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
+                    <p style="display:none" id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
                 </div>
             </div>
 

@@ -10,18 +10,55 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+    <!-- chart js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.3.2/chart.min.js" integrity="sha512-VCHVc5miKoln972iJPvkQrUYYq7XpxXzvqNfiul1H4aZDwGBGC0lq373KNleaB2LpnC2a/iNfE5zoRYmB4TRDQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.0.2/chartjs-plugin-annotation.min.js"></script>
     <link rel="stylesheet" href="styles_stats.css">
+
+    <!-- grid -->
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-alpine.css">
+
 </head>
 
 <body>
     <header class='flex-container'>
-        <div class='flex-item'>
+        <div class='flex-item' style="margin: 10px 0px;">
             <a href="./index.html"><button>Back</button></a>
         </div>
-        <div class='flex-item'>
-            <span>Stats</span>
+        <div class='flex-item' style="margin: 10px 0px;">
+            <span style="text-shadow: 1px 1px 1px rgb(0 0 0 / 25%); font-size: 25px;">Stats</span>
         </div>
     </header>
+
+    <div style="padding: 0px 10px;">
+
+        <h2>Routine Details</h2>
+
+        <p>Select joint to see stats: </p>
+
+        <div style="padding: 0px 10px;">
+            <label for="joint">Joint:</label>
+            <select name="joint" id="jointSelect">
+                <option value="carpus">Carpus</option>
+                <option value="elbow">Elbow</option>
+                <option value="shoulder">Shoulder</option>
+                <option value="ankle">Ankle</option>
+                <option value="stifle">Stifle</option>
+                <option value="hip">Hip</option>
+            </select>
+        </div>
+
+        <div>
+            <canvas width="90%" height="80%" id="myChart"></canvas>
+        </div>
+
+        <div id="myGrid" style="height: 300px; width:100%" class="ag-theme-alpine !important"></div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8" src="stats_script.js"></script>
 </body>
 
 </html>
