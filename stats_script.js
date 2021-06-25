@@ -186,7 +186,7 @@ const rowData = [{
         session: "2",
         joint: "Elbow",
         date: "02/06",
-        flexion: 90,
+        flexion: 92,
         extension: 100,
         rom: 100
     },
@@ -194,7 +194,7 @@ const rowData = [{
         session: "3",
         joint: "Elbow",
         date: "03/06",
-        flexion: 90,
+        flexion: 91,
         extension: 100,
         rom: 100
     },
@@ -202,7 +202,7 @@ const rowData = [{
         session: "4",
         joint: "Elbow",
         date: "04/06",
-        flexion: 90,
+        flexion: 93,
         extension: 100,
         rom: 100
     },
@@ -210,7 +210,7 @@ const rowData = [{
         session: "5",
         joint: "Elbow",
         date: "05/06",
-        flexion: 90,
+        flexion: 94,
         extension: 100,
         rom: 100
     },
@@ -218,7 +218,7 @@ const rowData = [{
         session: "6",
         joint: "Elbow",
         date: "06/06",
-        flexion: 90,
+        flexion: 94,
         extension: 100,
         rom: 100
     }

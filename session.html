@@ -83,6 +83,8 @@
 
                 <button id='setButton' class='button-body' type='button'>Set</button>
 
+                <p id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
+
             </div>
         </div>
 
@@ -100,15 +102,15 @@
                 <!-- ROM angle -->
                 <div style="align-items: center;">
                     <!-- <span>Joint angle:</span> -->
-                    <span id="angleROMLabel" style="font-size: 80px;">0º</span>
+                    <span id="angleROMLabel" style="font-size: 100px;">0º</span>
                     
                 </div>
 
                 <!-- safe range -->
                 <div>
-                    <canvas id="canvas" width="350" height="60"></canvas>
+                    <canvas id="canvas" width="300" height="60"></canvas>
                     <p id='repLabel'>Repetitions: 0/1</p>
-                    <p style="display:none" id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
+
                 </div>
             </div>
 
@@ -129,11 +131,7 @@
                     </ul>
                 </div>
                 <div>
-                    <label for="senderMail">Email:</label>
-                    <input type="text" id="mailInput" name="mailInput" size="30">
-                </div>
-                <div>
-                    <button id='mailButton' class='button-body' type='button'>Share </button>
+                    <button id='mailButton' class='button-body' type='button'>Save session</button>
                 </div>
             </div>
 

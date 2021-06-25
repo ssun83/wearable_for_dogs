@@ -53,17 +53,17 @@ new fullpage("#fullpage", {
 });
 
 mailButton.addEventListener('click', function () {
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = dd + '/' + mm + '/' + yyyy;
+
     // input
-    let mailSender = document.getElementById("mailInput").value;
-    let messageBody = `<html>
-    <h2>Summary of today session</h2>
-    <ul>
-        <li>Joint: ${jointSelect.value}</li>
-        <li>Flexion: ${minReachedValue}</li>
-        <li>Extension: ${maxReachedValue}</li>
-        <li>Repetitions: 0/${repSelect.value.toString()}</li>
-    </ul>
-    </html>`;
+    let mailSender = 'gabrielalvl31@gmail.com';
+    let messageBody = `${jointSelect.value},${minReachedValue},${maxReachedValue},${today}`;
 
     // password: 802DD3ADB06ADBE9BCACB005A4BBD1614480
     // security token a83c4b2a-f0fe-4769-b1d2-d486da82b34c
@@ -71,8 +71,9 @@ mailButton.addEventListener('click', function () {
         SecureToken: "a83c4b2a-f0fe-4769-b1d2-d486da82b34c",
         To: mailSender,
         From: "alert.analyticsperu@gmail.com",
-        Subject: "Summary ROM Routine",
+        Subject: "romwearable",
         Body: messageBody,
+
     }).then(
         message => alert("mail has been sent sucessfully")
     );
@@ -247,15 +248,15 @@ function gotValue(error, value) {
 
         // change text color
         if ((myValue > 0 && myValue <= parseInt(minAngleValue)) || (myValue >= parseInt(maxAngleValue))) {
-            angleLabel.style.color = "red";
+            angleLabel.style.color = "#ef476f";
             alert_sound_fast.play();
 
         } else if ((myValue > parseInt(minAngleValue) && myValue <= (parseInt(minAngleValue) + 20)) || (myValue >= (parseInt(maxAngleValue) - 20) && myValue < parseInt(maxAngleValue))) {
-            angleLabel.style.color = "orange";
+            angleLabel.style.color = "#ffd166";
             alert_sound.play();
 
         } else if (myValue > (parseInt(minAngleValue) + 20) && myValue < (parseInt(maxAngleValue) - 20)) {
-            angleLabel.style.color = "green";
+            angleLabel.style.color = "#06d6a0";
         }
 
         // change mix and max reached value
@@ -287,16 +288,23 @@ function gotValue(error, value) {
 
         // change draw
         var stops = [
-            [0, "#ff4e11"], //rojo
-            [parseInt(minAngleValue) + 20, "#ff8e15"], // naranja
-            [100, "#69b34c"], // verde
-            [parseInt(maxAngleValue) - 20, "#ff8e15"], // naranja
-            [parseInt(maxAngleValue), "#ff4e11"] // rojo
+            [parseInt(minAngleValue), "#ef476f"], //rojo
+
+            [parseInt(minAngleValue), "#ffd166"], // naranja
+            [parseInt(minAngleValue) + 20, "#ffd166"], // naranja
+
+            [parseInt(minAngleValue) + 20, "#06d6a0"], // verde
+            [parseInt(maxAngleValue) - 20, "#06d6a0"], // verde
+
+            [parseInt(maxAngleValue) - 20, "#ffd166"], // naranja
+            [parseInt(maxAngleValue), "#ffd166"], // naranja
+
+            [parseInt(maxAngleValue), "#ef476f"] // rojo
         ]
 
-        new myGuage.LinearGauge(canvas, 0, 200)
+        new myGuage.LinearGauge(canvas, 0, 220)
             .draw(stops)
-            .drawPointer(parseInt(myValue), '#fff', 10);
+            .drawPointer(parseInt(myValue), '#fff', 20, minAngleValue, maxAngleValue);
 
     }
 }
@@ -403,7 +411,7 @@ pauseButton.onclick = () => {
             return this;
         },
 
-        drawPointer: function (value, color, height) {
+        drawPointer: function (value, color, height, item1, item2) {
 
 
             // setup drawing context
@@ -440,13 +448,16 @@ pauseButton.onclick = () => {
                 height
             );
 
-            ctx.font = '15px Verdana';
+            ctx.font = '14px Verdana';
             ctx.fillStyle = '#fff';
-            ctx.fillText("10", ((this.canvasWidth / 200) * 10), (this.canvasHeight / 2.3));
-            ctx.fillText("45", ((this.canvasWidth / 200) * 45), (this.canvasHeight / 2.3));
-            ctx.fillText("90", ((this.canvasWidth / 200) * 90), (this.canvasHeight / 2.3));
-            ctx.fillText("135", ((this.canvasWidth / 200) * 135), (this.canvasHeight / 2.3));
-            ctx.fillText("180", ((this.canvasWidth / 200) * 180), (this.canvasHeight / 2.3));
+            // ctx.fillText("15", ((this.canvasWidth / 200) * 10), (this.canvasHeight / 2.3));
+            // ctx.fillText("45", ((this.canvasWidth / 200) * 45), (this.canvasHeight / 2.3));
+            // ctx.fillText("90", ((this.canvasWidth / 200) * 90), (this.canvasHeight / 2.3));
+            // ctx.fillText("135", ((this.canvasWidth / 200) * 135), (this.canvasHeight / 2.3));
+            // ctx.fillText("180", ((this.canvasWidth / 200) * 180), (this.canvasHeight / 2.3));
+
+            ctx.fillText(item1, ((this.canvasWidth / 220) * parseInt(item1)), (this.canvasHeight / 2.3));
+            ctx.fillText(item2, ((this.canvasWidth / 220) * parseInt(item2)), (this.canvasHeight / 2.3));
 
             ctx.stroke();
 
