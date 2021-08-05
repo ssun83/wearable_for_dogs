@@ -16,6 +16,7 @@ let disconnectButton = document.getElementById("disconnectButton");
 let startButton = document.getElementById("playButton");
 let setButton = document.getElementById("setButton");
 let mailButton = document.getElementById("mailButton");
+let angleCheckBox = document.getElementById("cbox1");
 
 // selects
 let repSelect = document.getElementById("repSelect");
@@ -244,7 +245,12 @@ function gotValue(error, value) {
         // You can also pass in the dataType
         // Options: 'unit8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'float32', 'float64', 'string'
         myBLE.read(myCharacteristic, 'string', gotValue);
-        angleLabel.innerHTML = myValue + "º";
+        if(angleCheckBox.checked == true){
+            angleLabel.innerHTML = String(360 - parseInt(myValue)) + "º";
+        } else{
+            angleLabel.innerHTML = myValue + "º";
+        }
+        
 
         // change text color
         if ((myValue > 0 && myValue <= parseInt(minAngleValue)) || (myValue >= parseInt(maxAngleValue))) {

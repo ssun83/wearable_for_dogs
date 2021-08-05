@@ -4,11 +4,7 @@
 #include <MadgwickAHRS.h>
 #include <Wire.h>
 #include <MPU9250.h>
-
-// variables del led
-int red_light_pin = 11;
-int green_light_pin = 10;
-int blue_light_pin = 9;
+#include "SingleEMAFilterLib.h"
 
 // variables de los imu
 float Mx, My, Mz, Ax, Ay, Az, Gx, Gy, Gz;
@@ -23,6 +19,8 @@ float toDeg = 1.0 / toRad;
 
 Madgwick filter;
 MPU9250 mpu;
+
+SingleEMAFilter<int> singleEMAFilter(0.6);
 
 void setup()
 {
@@ -41,12 +39,14 @@ void setup()
   mpu.setGyroBias(3.99, 2.23, 0.77);
   mpu.setMagBias(112.08, 281.14, 148.95);
   mpu.setMagScale(0.97, 0.95, 1.09);
-  mpu.setMagneticDeclination(-2.34);
+  mpu.setMagneticDeclination(-2.36);
 
   if (!IMU.begin())
   {
     while (1);
   }
+
+  delay(500);
 
   // configuracion acelerometro
   IMU.setAccelFS(2);  // Rangos -> 0: 2g, 1: 24g, 2: 4g, 3: 8g
@@ -70,15 +70,12 @@ void setup()
 
   float sensorRate = min(IMU.getGyroODR(), IMU.getMagnetODR());
   filter.begin(sensorRate);
-
-  pinMode(red_light_pin, OUTPUT);
-  pinMode(green_light_pin, OUTPUT);
-  pinMode(blue_light_pin, OUTPUT);
 }
 
 void loop()
 {
   float joint_angle = 0.0;
+  float joint_angle2 = 0.0;
   float k0, k1, k2;
   float k20, k21, k22;
   float selfmag = 0.0;
@@ -107,6 +104,7 @@ void loop()
     roll2 = -mpu.getRoll() ;
     pitch2 = -mpu.getPitch();
     _yaw2 = mpu.getYaw();
+
     if (_yaw2 < 0) {
       yaw2 = _yaw2 + 360.0;
     }
@@ -114,6 +112,7 @@ void loop()
       yaw2 = _yaw2;
     }
   }
+
 
   k0 = cos(yaw) * cos(pitch);
   k1 = sin(pitch);
@@ -158,32 +157,31 @@ void loop()
     joint_angle = 3.1416;
   }
 
-  joint_angle = 180 - (acos(a) * toDeg);
+  float det = k0 * k21 - k1 * k20;
 
-  Serial.println(joint_angle);
+  if (det < 0.0) {
+    joint_angle = 180 - (acos(a) * toDeg);
+  }
+  else {
+    joint_angle = 360 - 180 - (acos(a) * toDeg);
+  }
 
-  //  if (joint_angle < 40) {
-  //    RGB_color(255, 0, 0); // Red
-  //  }
-  //  else if (joint_angle >= 40 and joint_angle < 60) {
-  //    RGB_color(237, 109, 0); // Orange
-  //  }
-  //  else if (joint_angle >= 60 and joint_angle < 160) {
-  //    RGB_color(0, 255, 0); // Green
-  //  }
-  //  else if (joint_angle >= 160 and joint_angle < 170) {
-  //    RGB_color(237, 109, 0); // Orange
-  //  }
-  //  else if (joint_angle >= 170) {
-  //    RGB_color(255, 0, 0); // Red
-  //  }
+
+  //  joint_angle = 180 - (acos(a) * toDeg);
+
+
+  singleEMAFilter.AddValue(joint_angle);
+
+  Serial.print(joint_angle);
+  Serial.print(",");
+  Serial.println(singleEMAFilter.GetLowPass());
 
   // roll, pitch, yaw
-  //  Serial.print(pitch);
+  //  Serial.print(pitch * toDeg);
   //  Serial.print(",");
-  //  Serial.print(roll);
+  //  Serial.print(roll * toDeg);
   //  Serial.print(",");
-  //  Serial.print(yaw);
+  //  Serial.print(yaw * toDeg);
   //  Serial.print(",");
   //  Serial.print(pitch2);
   //  Serial.print(",");
@@ -191,13 +189,7 @@ void loop()
   //  Serial.print(",");
   //  Serial.println(yaw2);
 
-  delay(DELAY_MS);
 
-}
+  //  delay(DELAY_MS);
 
-void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
-{
-  analogWrite(red_light_pin, 255 - red_light_value);
-  analogWrite(green_light_pin, 255 - green_light_value);
-  analogWrite(blue_light_pin, 255 - blue_light_value);
 }

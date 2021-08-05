@@ -5,6 +5,7 @@
 #include <math.h>
 #include <Wire.h>
 #include <MPU9250.h>
+#include "SingleEMAFilterLib.h"
 
 // set BLE services
 BLEService WearableService("19B10010-E8F2-537E-4F6C-D104768A1214");
@@ -17,8 +18,8 @@ int blue_light_pin = 9;
 
 // IMU variables
 float Mx, My, Mz, Ax, Ay, Az, Gx, Gy, Gz;
-float roll, pitch, yaw;
-float roll2, pitch2, yaw2, _yaw2;
+float rolll, pitchl, yawl;
+float rollm, pitchm, yawm, _yawm;
 
 // conversion
 float toRad = 2.0 * 3.1416 / 360.0;
@@ -30,14 +31,16 @@ float toDeg = 1.0 / toRad;
 Madgwick filter;
 MPU9250 mpu;
 
+SingleEMAFilter<float> singleEMAFilter(0.6);
+
 void setup()
 {
+  // start serial monitor
   Serial.begin(115200);
 
+  // MPU-9250 connection
   Wire.begin();
-  delay(500);
 
-  // mpu9250 IMU
   if (!mpu.setup(0x68)) {  // change to your own address
     while (1) {
       Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
@@ -45,40 +48,37 @@ void setup()
     }
   }
 
-  // values obtained after calibration
-  mpu.setAccBias(14.56, 16.46, -39.54);
-  mpu.setGyroBias(3.99, 2.23, 0.77);
-  mpu.setMagBias(112.08, 281.14, 148.95);
-  mpu.setMagScale(0.97, 0.95, 1.09);
-  mpu.setMagneticDeclination(-2.34); // Lima, Peru declination
+  // MPU 9250 calibration values
+  mpu.setAccBias(-106.12, 66.36, -46.94);
+  mpu.setGyroBias(3.86, 2.24, 0.72);
+  mpu.setMagBias(236.42, 395.35, -311.45);
+  mpu.setMagScale(0.91, 1.10, 1.01);
+  mpu.setMagneticDeclination(-2.36); // Lima, Peru declination
 
-
-  // build-in arduino IMU
+  // Start LSM9DS1 communication
   if (!IMU.begin())
   {
     while (1);
   }
 
-  delay(500);
-
-  // acelerometer arduino build-in
+  // configuracion acelerometro
   IMU.setAccelFS(2);  // Rangos -> 0: 2g, 1: 24g, 2: 4g, 3: 8g
   IMU.setAccelODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
-  IMU.setAccelOffset(0.000091, -0.028406, -0.007399);
-  IMU.setAccelSlope(1.000338, 0.993624, 1.001161);
+  IMU.setAccelOffset(-0.003552, -0.023984, -0.003608);
+  IMU.setAccelSlope (0.999958, 0.990807, 1.000167);
 
-  // gyroscope arduino build-in
+  // configuracion giroscopio
   IMU.gyroUnit = DEGREEPERSECOND;
   IMU.setGyroFS(3); // Rangos -> 0: 245º/s, 1: 500º/s, 2: 1000º/s, 3: 2000º/s
   IMU.setGyroODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
-  IMU.setGyroOffset(0.424835, 0.507385, -0.077393);
-  IMU.setGyroSlope(1.175011, 1.000000, 1.140555);
+  IMU.setGyroOffset (0.629517, 0.368896, 0.614380);
+  IMU.setGyroSlope (1.251912, 1.274917, 1.439069);
 
-  // magnetometer arduino build-in
+  // configuracion magnetomet ro
   IMU.setMagnetFS(0); // Rangos -> 0: 400uT, 1: 800uT, 2: 1200uT, 3: 1600uT
   IMU.setMagnetODR(7); // Rangos -> 1: 1.25Hz, 2: 2.5Hz, 3: 5Hz, 4: 10Hz, 5: 20Hz, 6: 40Hz, 7:80Hz, 8:400Hz
-  IMU.setMagnetOffset(-3.031616, 30.895386, -19.974365);
-  IMU.setMagnetSlope (2.400837, 2.359905, 2.472181);
+  IMU.setMagnetOffset(-0.401611, 30.146484, -24.879761);
+  IMU.setMagnetSlope (1.178329, 1.178055, 1.205408);
 
   // filter rate
   float sensorRate = min(IMU.getGyroODR(), IMU.getMagnetODR());
@@ -110,10 +110,6 @@ void loop()
   BLE.poll();
 
   float joint_angle = 0.0;
-  float k0, k1, k2, k20, k21, k22;
-  float selfmag = 0.0;
-  float othermag = 0.0;
-  float a = 0.0;
 
   if (IMU.accelAvailable() && IMU.gyroAvailable() && IMU.magnetAvailable())
   {
@@ -127,69 +123,58 @@ void loop()
 
   // Madgwick filter and euler angles
   filter.update(Gx, Gy, Gz, Ax, Ay, Az, Mx, My, Mz);
-  roll = filter.getRoll() * toRad;
-  pitch = filter.getPitch() * toRad;
-  yaw = filter.getYaw() * toRad;
+  rolll = filter.getRoll();
+  pitchl = filter.getPitch();
+  yawl = filter.getYaw();
 
   // mpu9250 values
   if (mpu.update()) {
-    roll2 = -mpu.getRoll() ;
-    pitch2 = -mpu.getPitch();
-    _yaw2 = mpu.getYaw();
-    if (_yaw2 < 0) {
-      yaw2 = _yaw2 + 360.0;
+    rollm = -mpu.getRoll() ;
+    pitchm = -mpu.getPitch();
+    _yawm = mpu.getYaw();
+    if (_yawm < 0) {
+      yawm = _yawm + 360.0;
     }
     else {
-      yaw2 = _yaw2;
+      yawm = _yawm;
     }
   }
 
-  // vectors
-  k0 = cos(yaw) * cos(pitch);
-  k1 = sin(pitch);
-  k2 = sin(yaw) * cos(pitch);
-  k20 = cos(yaw2 * toRad) * cos(pitch2 * toRad);
-  k21 = sin(pitch2 * toRad);
-  k22 = sin(yaw2 * toRad) * cos(pitch2 * toRad);
+  // convert to rad
+  yawm = yawm * toRad;
+  pitchm = pitchm * toRad;
+  rollm = (rollm - 180) * 57.29578;
 
-  selfmag = sqrt(k0 * k0 + k1 * k1 + k2 * k2);
+  yawl = -(yawl * toRad);
+  pitchl = -(pitchl * toRad);
+  rolll = (rolll - 180) * 57.29578;
 
-  if (selfmag > 0.0) {
-    k0 = k0 / selfmag;
-    k1 = k1 / selfmag;
-    k2 = k2 / selfmag;
-  }
-  else {
-    k0 = 0.0;
-    k1 = 0.0;
-    k2 = 0.0;
-  }
+  float x1 = -cos(yawm) * cos(pitchm);
+  float y1 = sin(yawm) * cos(pitchm);
+  float z1 = sin(pitchm);
 
-  othermag = sqrt(k20 * k20 + k21 * k21 + k22 * k22);
+  float x2 = cos(yawl) * cos(pitchl);
+  float y2 = sin(yawl) * cos(pitchl);
+  float z2 = sin(pitchl);
 
-  if (othermag > 0.0) {
-    k20 = k20 / othermag;
-    k21 = k21 / othermag;
-    k22 = k22 / othermag;
-  }
-  else {
-    k20 = 0.0;
-    k21 = 0.0;
-    k22 = 0.0;
+  float theta1 = atan2(y1, x1);
+  float theta2 = atan2(y2, x2);
+  joint_angle = theta1 - theta2;
+
+  if (joint_angle < 0) {
+    joint_angle = joint_angle + 2 * 3.1416;
   }
 
-  a = k0 * k20 + k1 * k21 + k2 * k22;
+  joint_angle = joint_angle * toDeg;
 
-  if (a > 1.0) {
-    joint_angle = 0.0;
-  }
-  if (a < -1.0) {
-    joint_angle = 3.1416;
-  }
+  // filter the angle to be less jumpy
+  singleEMAFilter.AddValue(joint_angle);
 
-  joint_angle = 180 - (acos(a) * toDeg);
+  // Serial.println(joint_angle);
 
-  //  Serial.println(joint_angle);
+  // write values on BLE
+  rom_ble = String(int(singleEMAFilter.GetLowPass()));
+  WearableROM.writeValue(rom_ble);
 
   // RGB LED
   if (joint_angle < 40) {
@@ -208,14 +193,7 @@ void loop()
     RGB_color(255, 0, 0); // Red
   }
 
-  // roll, pitch, yaw
-  //  Serial.print(pitch); Serial.print(","); Serial.print(roll); Serial.print(","); Serial.print(yaw); Serial.print(",");
-  //  Serial.print(pitch2); Serial.print(","); Serial.print(roll2); Serial.print(","); Serial.println(yaw2);
 
-  // write values on BLE
-  rom_ble = String(int(joint_angle));
-  Serial.println(rom_ble);
-  WearableROM.writeValue(rom_ble);
 
   delay(IMU_SAMPLERATE_DELAY_MS);
 
