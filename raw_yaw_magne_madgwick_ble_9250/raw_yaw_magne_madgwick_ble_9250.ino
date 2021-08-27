@@ -52,8 +52,8 @@ void setup()
   mpu.setAccBias(-106.12, 66.36, -46.94);
   mpu.setGyroBias(3.86, 2.24, 0.72);
   mpu.setMagBias(236.42, 395.35, -311.45);
-  mpu.setMagScale(0.91, 1.10, 1.01);
-  mpu.setMagneticDeclination(-2.36); // Lima, Peru declination
+  //mpu.setMagneticDeclination(-2.36); // Lima, Peru declination
+  mpu.setMagneticDeclination(+13.2); // Davis declination
 
   // Start LSM9DS1 communication
   if (!IMU.begin())
@@ -61,24 +61,44 @@ void setup()
     while (1);
   }
 
-  // configuracion acelerometro
-  IMU.setAccelFS(2);  // Rangos -> 0: 2g, 1: 24g, 2: 4g, 3: 8g
-  IMU.setAccelODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
-  IMU.setAccelOffset(-0.003552, -0.023984, -0.003608);
-  IMU.setAccelSlope (0.999958, 0.990807, 1.000167);
+  // configuracion acelerometro PERU
+//  IMU.setAccelFS(2);  // Rangos -> 0: 2g, 1: 24g, 2: 4g, 3: 8g
+//  IMU.setAccelODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
+//  IMU.setAccelOffset(-0.003552, -0.023984, -0.003608);
+//  IMU.setAccelSlope (0.999958, 0.990807, 1.000167);
 
-  // configuracion giroscopio
-  IMU.gyroUnit = DEGREEPERSECOND;
-  IMU.setGyroFS(3); // Rangos -> 0: 245º/s, 1: 500º/s, 2: 1000º/s, 3: 2000º/s
-  IMU.setGyroODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
-  IMU.setGyroOffset (0.629517, 0.368896, 0.614380);
-  IMU.setGyroSlope (1.251912, 1.274917, 1.439069);
+//Davis
+  IMU.setAccelFS(2);
+  IMU.setAccelODR(3);
+  IMU.setAccelOffset(-0.006404, -0.014818, -0.002058);
+  IMU.setAccelSlope (0.996882, 0.992155, 0.986763);
 
-  // configuracion magnetomet ro
-  IMU.setMagnetFS(0); // Rangos -> 0: 400uT, 1: 800uT, 2: 1200uT, 3: 1600uT
-  IMU.setMagnetODR(7); // Rangos -> 1: 1.25Hz, 2: 2.5Hz, 3: 5Hz, 4: 10Hz, 5: 20Hz, 6: 40Hz, 7:80Hz, 8:400Hz
-  IMU.setMagnetOffset(-0.401611, 30.146484, -24.879761);
-  IMU.setMagnetSlope (1.178329, 1.178055, 1.205408);
+  // configuracion giroscopio peru
+//  IMU.gyroUnit = DEGREEPERSECOND;
+//  IMU.setGyroFS(3); // Rangos -> 0: 245º/s, 1: 500º/s, 2: 1000º/s, 3: 2000º/s
+//  IMU.setGyroODR(3); // Rangos -> 1: 10Hz, 2: 50Hz, 3: 119Hz, 4: 238Hz, 5: 476Hz
+//  IMU.setGyroOffset (0.629517, 0.368896, 0.614380);
+//  IMU.setGyroSlope (1.251912, 1.274917, 1.439069);
+
+  //davis
+  IMU.setGyroFS(3);
+  IMU.setGyroODR(3);
+  IMU.setGyroOffset (1.540039, -0.151611, 0.713135);
+  IMU.setGyroSlope (1.132959, 1.196907, 1.32000);
+
+
+  // configuracion magnetomet ro PERU
+//  IMU.setMagnetFS(0); // Rangos -> 0: 400uT, 1: 800uT, 2: 1200uT, 3: 1600uT
+//  IMU.setMagnetODR(7); // Rangos -> 1: 1.25Hz, 2: 2.5Hz, 3: 5Hz, 4: 10Hz, 5: 20Hz, 6: 40Hz, 7:80Hz, 8:400Hz
+//  IMU.setMagnetOffset(-0.401611, 30.146484, -24.879761);
+//  IMU.setMagnetSlope (1.178329, 1.178055, 1.205408);
+
+  //Davis
+  IMU.setMagnetFS(0);
+  IMU.setMagnetODR(7);
+  IMU.setMagnetOffset(-24.375000, 145.971069, 44.835815);
+  IMU.setMagnetSlope (0.129235, 0.191106, 0.136685);
+
 
   // filter rate
   float sensorRate = min(IMU.getGyroODR(), IMU.getMagnetODR());
@@ -142,12 +162,16 @@ void loop()
 
   // convert to rad
   yawm = yawm * toRad;
-  pitchm = pitchm * toRad;
-  rollm = (rollm - 180) * 57.29578;
+  // pitchm = pitchm * toRad;
+  // rollm = (rollm - 180) * 57.29578;
+  pitchm = 0.0;
+  rollm = 0.0;
 
   yawl = -(yawl * toRad);
-  pitchl = -(pitchl * toRad);
-  rolll = (rolll - 180) * 57.29578;
+  // pitchl = -(pitchl * toRad);
+  // rolll = (rolll - 180) * 57.29578;
+  pitchl = 0.0;
+  rolll = 0.0;
 
   float x1 = -cos(yawm) * cos(pitchm);
   float y1 = sin(yawm) * cos(pitchm);
