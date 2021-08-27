@@ -1,3 +1,8 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -79,26 +84,28 @@ span{
 }
 
 select {
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 15px;
     font-family: 'Poppins', sans-serif;
     height: 40px;
     width: 50%;
-    padding: 5px;
+    padding: 4px;
 }
 
 input {
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 15px;
     font-family: 'Poppins', sans-serif;
     /* height: 30px; */
-    width: fit-content;
-    padding: 5px;
+    width: 35px;
+    padding: 4px;
 }
 
 .flex-column {
     display: flex;
     flex-direction: column;
-    padding: 15%;
+    padding: 10%;
     gap: 15px;
 }
+
+

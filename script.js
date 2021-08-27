@@ -9,6 +9,14 @@ let minAngleValue = "0";
 let maxAngleValue = "0";
 let minReachedValue = "180";
 let maxReachedValue = "0";
+let angleSide = false;
+let previousAngle = 0;
+
+// colors
+var normalColor = "#adacb1";
+var warningColor = "#f3a712";
+var outColor = "#f02bd2";
+var blackNormalColor = "#3a3a3a";
 
 // buttons
 let connectButton = document.getElementById("connectButton");
@@ -22,6 +30,9 @@ let angleCheckBox = document.getElementById("cbox1");
 let repSelect = document.getElementById("repSelect");
 let breedSelect = document.getElementById("breedSelect");
 let jointSelect = document.getElementById("jointSelect");
+let sideSelect = document.getElementById("sideSelect");
+let minCustom = document.getElementById("minCustom");
+let maxCustom = document.getElementById("maxCustom");
 
 // labels
 let repLabel = document.getElementById("repLabel");
@@ -91,26 +102,52 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '32';
                 maxAngleValue = '196';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'elbow':
                 minAngleValue = '36';
                 maxAngleValue = '165';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'shoulder':
                 minAngleValue = '57';
                 maxAngleValue = '165';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'ankle':
                 minAngleValue = '39';
                 maxAngleValue = '164';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'stifle':
                 minAngleValue = '42';
                 maxAngleValue = '162';
-                break;
-            case 'hip':
-                minAngleValue = '50';
-                maxAngleValue = '162';
+                if(sideSelect == 'left'){
+                    angleSide = true;
+                }
+                else{
+                    angleSide = false;
+                }
                 break;
             default:
                 console.log("unknown joint");
@@ -122,26 +159,52 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '34';
                 maxAngleValue = '198';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'elbow':
                 minAngleValue = '25';
                 maxAngleValue = '155';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'shoulder':
                 minAngleValue = '47';
                 maxAngleValue = '159';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'ankle':
                 minAngleValue = '30';
                 maxAngleValue = '149';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'stifle':
                 minAngleValue = '33';
                 maxAngleValue = '153';
-                break;
-            case 'hip':
-                minAngleValue = '44';
-                maxAngleValue = '155';
+                if(sideSelect == 'left'){
+                    angleSide = true;
+                }
+                else{
+                    angleSide = false;
+                }
                 break;
             default:
                 console.log("unknown joint");
@@ -153,33 +216,64 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '50';
                 maxAngleValue = '205';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'elbow':
                 minAngleValue = '50';
                 maxAngleValue = '180';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'shoulder':
                 minAngleValue = '50';
                 maxAngleValue = '175';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'ankle':
                 minAngleValue = '50';
                 maxAngleValue = '180';
+                if(sideSelect == 'left'){
+                    angleSide = false;
+                }
+                else{
+                    angleSide = true;
+                }
                 break;
             case 'stifle':
                 minAngleValue = '50';
                 maxAngleValue = '180';
-                break;
-            case 'hip':
-                minAngleValue = '50';
-                maxAngleValue = '170';
+                if(sideSelect == 'left'){
+                    angleSide = true;
+                }
+                else{
+                    angleSide = false;
+                }
                 break;
             default:
                 console.log("unknown joint");
         }
     }
 
-    safeRangeLabel.innerHTML = "Safe range from " + minAngleValue + "º to " + maxAngleValue + "º";
+    if(maxCustom.value != 200 && minCustom.value != 10){
+        minAngleValue = minCustom.value.toString();
+        maxAngleValue = maxCustom.value.toString();
+    }
+
+    safeRangeLabel.innerHTML = "Expected range from " + minAngleValue + "º to " + maxAngleValue + "º";
 })
 
 connectButton.addEventListener('click', function () {
@@ -245,24 +339,32 @@ function gotValue(error, value) {
         // You can also pass in the dataType
         // Options: 'unit8', 'uint16', 'uint32', 'int8', 'int16', 'int32', 'float32', 'float64', 'string'
         myBLE.read(myCharacteristic, 'string', gotValue);
-        if(angleCheckBox.checked == true){
+
+        // if(Math.abs(parseInt(myValue) - previousAngle) < 30){
+
+        //     previousAngle = parseInt(myValue);
+        // }
+        // else{
+        //     myValue = previousAngle.toString();
+        // }
+
+        if(angleSide == true){
             angleLabel.innerHTML = String(360 - parseInt(myValue)) + "º";
         } else{
             angleLabel.innerHTML = myValue + "º";
         }
         
-
         // change text color
         if ((myValue > 0 && myValue <= parseInt(minAngleValue)) || (myValue >= parseInt(maxAngleValue))) {
-            angleLabel.style.color = "#ef476f";
+            angleLabel.style.color = outColor;
             alert_sound_fast.play();
 
         } else if ((myValue > parseInt(minAngleValue) && myValue <= (parseInt(minAngleValue) + 20)) || (myValue >= (parseInt(maxAngleValue) - 20) && myValue < parseInt(maxAngleValue))) {
-            angleLabel.style.color = "#ffd166";
+            angleLabel.style.color = warningColor;
             alert_sound.play();
 
         } else if (myValue > (parseInt(minAngleValue) + 20) && myValue < (parseInt(maxAngleValue) - 20)) {
-            angleLabel.style.color = "#06d6a0";
+            angleLabel.style.color = normalColor;
         }
 
         // change mix and max reached value
@@ -294,18 +396,18 @@ function gotValue(error, value) {
 
         // change draw
         var stops = [
-            [parseInt(minAngleValue), "#ef476f"], //rojo
+            [parseInt(minAngleValue), outColor], //rojo
 
-            [parseInt(minAngleValue), "#ffd166"], // naranja
-            [parseInt(minAngleValue) + 20, "#ffd166"], // naranja
+            [parseInt(minAngleValue), warningColor], // naranja
+            [parseInt(minAngleValue) + 20, warningColor], // naranja
 
-            [parseInt(minAngleValue) + 20, "#06d6a0"], // verde
-            [parseInt(maxAngleValue) - 20, "#06d6a0"], // verde
+            [parseInt(minAngleValue) + 20, normalColor], // verde
+            [parseInt(maxAngleValue) - 20, normalColor], // verde
 
-            [parseInt(maxAngleValue) - 20, "#ffd166"], // naranja
-            [parseInt(maxAngleValue), "#ffd166"], // naranja
+            [parseInt(maxAngleValue) - 20, warningColor], // naranja
+            [parseInt(maxAngleValue), warningColor], // naranja
 
-            [parseInt(maxAngleValue), "#ef476f"] // rojo
+            [parseInt(maxAngleValue), outColor] // rojo
         ]
 
         new myGuage.LinearGauge(canvas, 0, 220)

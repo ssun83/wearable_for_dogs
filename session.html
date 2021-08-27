@@ -41,11 +41,13 @@
     <div id="fullpage">
         <!-- wearable connection -->
         <div class="vertical-scrolling">
-            <h1>Connect your wearable</h1>
-            <div>
-                <button id='connectButton' class='button-body' type='button'>Connect</button>
-                <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
-                <p id='wearableStatus'>Status: Disconnected</p>
+            <div class="flex-column">
+                <h1>Connect your wearable</h1>
+                <div>
+                    <button id='connectButton' class='button-body' type='button'>Connect</button>
+                    <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
+                    <p id='wearableStatus'>Status: Disconnected</p>
+                </div>
             </div>
         </div>
 
@@ -72,19 +74,35 @@
                         <option value="shoulder">Shoulder</option>
                         <option value="ankle">Ankle</option>
                         <option value="stifle">Stifle</option>
-                        <option value="hip">Hip</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="side">Side:</label>
+                    <select name="side" id="sideSelect">
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
                     </select>
                 </div>
 
                 <div>
                     <label for="repetitions">Repetitions:</label>
                     <input type="number" id="repSelect" name="repetitions" min="1" max="20" value="1">
-                    <label><input type="checkbox" id="cbox1" value="angle_checkbox">Counterclockwise</label>
+                    <p id="safeRangeLabel" style="color:gray">Expected range from 0º to 45º</p>
                 </div>
 
-                <button id='setButton' class='button-body' type='button'>Set</button>
+                <div>
+                    <hr>
+                    <p>Custom Range</p>
+                    <label>From</label>
+                    <input type="number" id="minCustom" min="0" max="360" value="10">
+                    <label>to</label>
+                    <input type="number" id="maxCustom" min="0" max="360" value="200">
+                </div>
 
-                <p id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
+                <button id='setButton' class='button-body' type='button'>Set routine</button>
+
+
 
             </div>
         </div>
