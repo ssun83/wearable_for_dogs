@@ -6,15 +6,20 @@
 #include <Wire.h>
 #include <MPU9250.h>
 #include "SingleEMAFilterLib.h"
+#include <Adafruit_NeoPixel.h>
 
 // set BLE services
 BLEService WearableService("19B10010-E8F2-537E-4F6C-D104768A1214");
 BLEStringCharacteristic WearableROM("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 3);
 
 // LED variables
-int red_light_pin = 11;
-int green_light_pin = 10;
-int blue_light_pin = 9;
+//int red_light_pin = 11;
+//int green_light_pin = 10;
+//int blue_light_pin = 9;
+#define PIN    6
+#define NUMPIXELS 1 // Popular NeoPixel ring size
+#define DELAYVAL 500
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 // IMU variables
 float Mx, My, Mz, Ax, Ay, Az, Gx, Gy, Gz;
@@ -33,6 +38,7 @@ MPU9250 mpu;
 
 SingleEMAFilter<float> singleEMAFilter(0.6);
 
+
 void setup()
 {
   // start serial monitor
@@ -47,11 +53,16 @@ void setup()
       delay(500);
     }
   }
+  pixels.begin();
 
   // MPU 9250 calibration values
-  mpu.setAccBias(-106.12, 66.36, -46.94);
-  mpu.setGyroBias(3.86, 2.24, 0.72);
-  mpu.setMagBias(236.42, 395.35, -311.45);
+//  mpu.setAccBias(-106.12, 66.36, -46.94);
+//  mpu.setGyroBias(3.86, 2.24, 0.72);
+//  mpu.setMagBias(236.42, 395.35, -311.45);
+
+  mpu.setAccBias(474.69, -1317.00, -120.86);
+  mpu.setGyroBias(-0.35, 0.64, -32.45);
+  mpu.setMagBias(587.85, 1109.43, 981.09);
   //mpu.setMagneticDeclination(-2.36); // Lima, Peru declination
   mpu.setMagneticDeclination(+13.2); // Davis declination
 
@@ -68,10 +79,10 @@ void setup()
 //  IMU.setAccelSlope (0.999958, 0.990807, 1.000167);
 
 //Davis
-  IMU.setAccelFS(2);
-  IMU.setAccelODR(3);
-  IMU.setAccelOffset(-0.006404, -0.014818, -0.002058);
-  IMU.setAccelSlope (0.996882, 0.992155, 0.986763);
+   IMU.setAccelFS(2);
+   IMU.setAccelODR(3);
+   IMU.setAccelOffset(-0.004951, -0.011585, -0.004345);
+   IMU.setAccelSlope (0.997357, 0.989420, 1.000819);
 
   // configuracion giroscopio peru
 //  IMU.gyroUnit = DEGREEPERSECOND;
@@ -94,20 +105,23 @@ void setup()
 //  IMU.setMagnetSlope (1.178329, 1.178055, 1.205408);
 
   //Davis
-  IMU.setMagnetFS(0);
-  IMU.setMagnetODR(7);
-  IMU.setMagnetOffset(-24.375000, 145.971069, 44.835815);
-  IMU.setMagnetSlope (0.129235, 0.191106, 0.136685);
-
+//  IMU.setMagnetFS(0);
+//  IMU.setMagnetODR(7);
+//  IMU.setMagnetOffset(-24.375000, 145.971069, 44.835815);
+//  IMU.setMagnetSlope (0.129235, 0.191106, 0.136685);
+   IMU.setMagnetFS(0);
+   IMU.setMagnetODR(7);
+   IMU.setMagnetOffset(10.537720, -33.231812, -47.781372);
+   IMU.setMagnetSlope (1.126570, 1.005525, 0.875984);
 
   // filter rate
   float sensorRate = min(IMU.getGyroODR(), IMU.getMagnetODR());
   filter.begin(sensorRate);
 
   // RGB LED
-  pinMode(red_light_pin, OUTPUT);
-  pinMode(green_light_pin, OUTPUT);
-  pinMode(blue_light_pin, OUTPUT);
+//  pinMode(red_light_pin, OUTPUT);
+//  pinMode(green_light_pin, OUTPUT);
+//  pinMode(blue_light_pin, OUTPUT);
 
   // BLE initialization
   if (!BLE.begin()) {
@@ -226,7 +240,14 @@ void loop()
 // RGB LED colors
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
 {
-  analogWrite(red_light_pin, 255 - red_light_value);
-  analogWrite(green_light_pin, 255 - green_light_value);
-  analogWrite(blue_light_pin, 255 - blue_light_value);
+  for(int i=0; i<1; i++) { // For each pixel...
+
+    // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
+    // Here we're using a moderately bright green color:
+    pixels.setPixelColor(i, pixels.Color(red_light_value, green_light_value, blue_light_value));
+
+    pixels.show();   // Send the updated pixel colors to the hardware.
+
+    delay(DELAYVAL); // Pause before next pass through loop
+  }
 }

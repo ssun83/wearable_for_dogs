@@ -5,16 +5,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=chrome">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wearable ROM</title>
+    <title>WOOFlex</title>
+
     <!--FullPage Js-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.min.js"
-        integrity="sha512-HqbDsHIJoZ36Csd7NMupWFxC7e7aX2qm213sX+hirN+yEx/eUNlZrTWPs1dUQDEW4fMVkerv1PfMohR1WdFFJQ=="
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.css"
-        integrity="sha512-hGBKkjAVJUXoImyDezOKpzuY4LS1eTvJ4HTC/pbxn47x5zNzGA1vi3vFQhhOehWLTNHdn+2Yqh/IRNPw/8JF/A=="
-        crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.min.js" integrity="sha512-HqbDsHIJoZ36Csd7NMupWFxC7e7aX2qm213sX+hirN+yEx/eUNlZrTWPs1dUQDEW4fMVkerv1PfMohR1WdFFJQ==" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.0/fullpage.css" integrity="sha512-hGBKkjAVJUXoImyDezOKpzuY4LS1eTvJ4HTC/pbxn47x5zNzGA1vi3vFQhhOehWLTNHdn+2Yqh/IRNPw/8JF/A==" crossorigin="anonymous" />
     <!--End FullPage Js-->
-    
+
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
@@ -23,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles_session.css">
+    <link rel="stylesheet" href="../css/styles_session.css">
 
 </head>
 
@@ -31,21 +28,24 @@
     <!-- header -->
     <header class='flex-container'>
         <div class='flex-item'>
-            <a href="./index.html"><button>Back</button></a>
+            <a href="../index.html"><button>Back</button></a>
         </div>
         <div class='flex-item'>
-            <span class="span-title">Session</span>
+            <span class="span-title" id="spanText">Your </span>
+            <span class="span-title" id="spanBarra">Session</span>
         </div>
     </header>
 
     <div id="fullpage">
         <!-- wearable connection -->
         <div class="vertical-scrolling">
-            <h1>Connect your wearable</h1>
-            <div>
-                <button id='connectButton' class='button-body' type='button'>Connect</button>
-                <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
-                <p id='wearableStatus'>Status: Disconnected</p>
+            <div class="flex-column">
+                <h1>Connect your wearable</h1>
+                <div>
+                    <button id='connectButton' class='button-body' type='button'>Connect</button>
+                    <button id='disconnectButton' class='button-body' type='button'>Disconnect</button>
+                    <p id='wearableStatus'>Status: Disconnected</p>
+                </div>
             </div>
         </div>
 
@@ -72,20 +72,33 @@
                         <option value="shoulder">Shoulder</option>
                         <option value="ankle">Ankle</option>
                         <option value="stifle">Stifle</option>
-                        <option value="hip">Hip</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="side">Side:</label>
+                    <select name="side" id="sideSelect">
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
                     </select>
                 </div>
 
                 <div>
                     <label for="repetitions">Repetitions:</label>
                     <input type="number" id="repSelect" name="repetitions" min="1" max="20" value="1">
-                    <label><input type="checkbox" id="cbox1" value="angle_checkbox">Counterclockwise</label>
+                    <p id="safeRangeLabel" style="color:gray">Expected range from 0º to 45º</p>
                 </div>
 
-                <button id='setButton' class='button-body' type='button'>Set</button>
+                <div>
+                    <hr>
+                    <p>Custom Range</p>
+                    <label>From</label>
+                    <input type="number" id="minCustom" min="0" max="360" value="10">
+                    <label>to</label>
+                    <input type="number" id="maxCustom" min="0" max="360" value="200">
+                </div>
 
-                <p id="safeRangeLabel" style="color:gray">Safe range from 0º to 45º</p>
-
+                <button id='setButton' class='button-body' type='button'>Set routine</button>
             </div>
         </div>
 
@@ -104,7 +117,7 @@
                 <div style="align-items: center;">
                     <!-- <span>Joint angle:</span> -->
                     <span id="angleROMLabel" style="font-size: 100px;">0º</span>
-                    
+
                 </div>
 
                 <!-- safe range -->
@@ -122,13 +135,34 @@
             <div class="flex-column">
 
                 <h1>Session Summary</h1>
-                <p>Good job ✨</p>
                 <div style="text-align: left;">
                     <ul>
                         <li id='summaryJoint'>Joint: Shoulder</li>
-                        <li id='summaryFlexion'>Flexion: 0º</li>
-                        <li id='summaryExtension'>Extension: 180º</li>
-                        <li id='summaryRepetition'>Repetitions: 0/10</li>
+                        <li id='summaryRepetition'>Repetitions: 10</li>
+                        <li>
+                            <table>
+                                <tr>
+                                    <th>Obtained Flexion</th>
+                                    <th>Expected Flexion</th>
+                                </tr>
+                                <tr>
+                                    <td id='summaryFlexion'>10</td>
+                                    <td id='expectedFlexion'>100</td>
+                                </tr>
+                            </table>
+                        </li>
+                        <li>
+                            <table>
+                                <tr>
+                                    <th>Obtained Extension</th>
+                                    <th>Expected Extension</th>
+                                </tr>
+                                <tr>
+                                    <td id='summaryExtension'>10</td>
+                                    <td id='expectedExtension'>100</td>
+                                </tr>
+                            </table>
+                        </li>
                     </ul>
                 </div>
                 <div>
@@ -138,7 +172,7 @@
 
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>
