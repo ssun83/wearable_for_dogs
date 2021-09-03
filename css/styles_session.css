@@ -108,4 +108,17 @@ input {
     gap: 15px;
 }
 
+li{
+    margin-bottom: 10px;
+}
+
+table, td, th {
+    border: 1px solid black;
+  }
+
+table{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
 

@@ -11,6 +11,7 @@ let minReachedValue = "180";
 let maxReachedValue = "0";
 let angleSide = false;
 let previousAngle = 0;
+var contador = 0;
 
 // colors
 var normalColor = "#adacb1";
@@ -40,20 +41,28 @@ let safeRangeLabel = document.getElementById("safeRangeLabel")
 let wearableStatus = document.getElementById("wearableStatus");
 let angleLabel = document.getElementById("angleROMLabel");
 
+// spans
+var spanText = document.getElementById("spanText");
+var spanBarra = document.getElementById("spanBarra");
+var toogleText = true;
+var toogleBarra = true;
+
 // canvas
 var canvas = document.getElementById('canvas');
 
 // audio
-var max_angle_audio = new Audio('full_extension.mp3');
-var min_angle_audio = new Audio('full_flexion.mp3');
-var alert_sound = new Audio('stairs-567.mp3');
-var alert_sound_fast = new Audio('stairs-567-fast.mp3');
+var max_angle_audio = new Audio('../assets/full_extension.mp3');
+var min_angle_audio = new Audio('../assets/full_flexion.mp3');
+var alert_sound = new Audio('../assets/stairs-567.mp3');
+var alert_sound_fast = new Audio('../assets/stairs-567-fast.mp3');
 
 // summary
 let summaryJoint = document.getElementById("summaryJoint");
 let summaryFlexion = document.getElementById("summaryFlexion");
 let summaryExtension = document.getElementById("summaryExtension");
 let summaryRepetition = document.getElementById("summaryRepetition");
+let expectedFlexion = document.getElementById("expectedFlexion");
+let expectedExtension = document.getElementById("expectedExtension");
 
 myBLE = new p5ble();
 
@@ -62,6 +71,30 @@ new fullpage("#fullpage", {
     sectionSelector: '.vertical-scrolling',
     navigation: true,
     parallax: true,
+});
+
+spanText.addEventListener('click', function () {
+    if (toogleText == true) {
+        toogleText = false;
+        angleLabel.style.display = "none";
+        spanText.style.color = "#e1e1e1";
+    } else {
+        toogleText = true;
+        angleLabel.style.display = "block";
+        spanText.style.color = "white";
+    }
+});
+
+spanBarra.addEventListener('click', function () {
+    if (toogleBarra == true) {
+        toogleBarra = false;
+        canvas.style.display = "none";
+        spanBarra.style.color = "#e1e1e1";
+    } else {
+        toogleBarra = true;
+        canvas.style.display = "block";
+        spanBarra.style.color = "white";
+    }
 });
 
 mailButton.addEventListener('click', function () {
@@ -102,50 +135,45 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '32';
                 maxAngleValue = '196';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'elbow':
                 minAngleValue = '36';
                 maxAngleValue = '165';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'shoulder':
                 minAngleValue = '57';
                 maxAngleValue = '165';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'ankle':
                 minAngleValue = '39';
                 maxAngleValue = '164';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'stifle':
                 minAngleValue = '42';
                 maxAngleValue = '162';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = true;
-                }
-                else{
+                } else {
                     angleSide = false;
                 }
                 break;
@@ -159,50 +187,45 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '34';
                 maxAngleValue = '198';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'elbow':
                 minAngleValue = '25';
                 maxAngleValue = '155';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'shoulder':
                 minAngleValue = '47';
                 maxAngleValue = '159';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'ankle':
                 minAngleValue = '30';
                 maxAngleValue = '149';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'stifle':
                 minAngleValue = '33';
                 maxAngleValue = '153';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = true;
-                }
-                else{
+                } else {
                     angleSide = false;
                 }
                 break;
@@ -216,50 +239,45 @@ setButton.addEventListener('click', function () {
             case 'carpus':
                 minAngleValue = '50';
                 maxAngleValue = '205';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'elbow':
                 minAngleValue = '50';
                 maxAngleValue = '180';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'shoulder':
                 minAngleValue = '50';
                 maxAngleValue = '175';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'ankle':
                 minAngleValue = '50';
                 maxAngleValue = '180';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = false;
-                }
-                else{
+                } else {
                     angleSide = true;
                 }
                 break;
             case 'stifle':
                 minAngleValue = '50';
                 maxAngleValue = '180';
-                if(sideSelect == 'left'){
+                if (sideSelect == 'left') {
                     angleSide = true;
-                }
-                else{
+                } else {
                     angleSide = false;
                 }
                 break;
@@ -268,7 +286,7 @@ setButton.addEventListener('click', function () {
         }
     }
 
-    if(maxCustom.value != 200 && minCustom.value != 10){
+    if (maxCustom.value != 200 && minCustom.value != 10) {
         minAngleValue = minCustom.value.toString();
         maxAngleValue = maxCustom.value.toString();
     }
@@ -348,12 +366,13 @@ function gotValue(error, value) {
         //     myValue = previousAngle.toString();
         // }
 
-        if(angleSide == true){
+        if (angleSide == true) {
             angleLabel.innerHTML = String(360 - parseInt(myValue)) + "º";
-        } else{
+            myValue = String(360 - parseInt(myValue));
+        } else {
             angleLabel.innerHTML = myValue + "º";
         }
-        
+
         // change text color
         if ((myValue > 0 && myValue <= parseInt(minAngleValue)) || (myValue >= parseInt(maxAngleValue))) {
             angleLabel.style.color = outColor;
@@ -367,14 +386,17 @@ function gotValue(error, value) {
             angleLabel.style.color = normalColor;
         }
 
-        // change mix and max reached value
-        if (parseInt(myValue) < parseInt(minReachedValue)) {
-            minReachedValue = myValue;
-        }
+        if (contador >= 20) {
+            // change mix and max reached value
+            if (parseInt(myValue) < parseInt(minReachedValue)) {
+                minReachedValue = myValue;
+            }
 
-        if (parseInt(myValue) > parseInt(maxReachedValue)) {
-            maxReachedValue = myValue;
+            if (parseInt(myValue) > parseInt(maxReachedValue)) {
+                maxReachedValue = myValue;
+            }
         }
+        contador++;
 
         // voice feeback
         switch (parseInt(myValue)) {
@@ -385,14 +407,17 @@ function gotValue(error, value) {
                 max_angle_audio.play();
                 break;
             default:
-                console.log('Not max or min angle.');
+                break;
         }
 
         // update summary
         summaryJoint.innerHTML = `Joint: ${jointSelect.value}`;
-        summaryFlexion.innerHTML = `Flexion: ${minReachedValue}`;
-        summaryExtension.innerHTML = `Extension: ${maxReachedValue}`;
-        summaryRepetition.innerHTML = `Repetitions: 0/${repSelect.value}`;
+        summaryFlexion.innerHTML = `${minReachedValue}`;
+        summaryExtension.innerHTML = `${maxReachedValue}`;
+        summaryRepetition.innerHTML = `Repetitions: ${repSelect.value}`;
+        expectedFlexion.innerHTML = `${minAngleValue}`;
+        expectedExtension.innerHTML = `${maxAngleValue}`;
+
 
         // change draw
         var stops = [
